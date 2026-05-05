@@ -168,42 +168,7 @@ GROUP BY product_category
 HAVING AVG(is_returned::numeric * 100) > 22  -- sirf high return rate wali
 ORDER BY return_rate_pct DESC;
 
-## category return rate & Refund loss Breakdown 
 
-
-SELECT 
-    product_category,
-    total_orders,
-    total_returns,
-    return_rate_pct,
-    total_refund_loss,
-    avg_rating,
-    
-    -- Return rate % har price range mein
-    ROUND((returns_0_50::numeric / NULLIF(orders_0_50,0) * 100), 2) as return_pct_0_50,
-    ROUND((returns_50_200::numeric / NULLIF(orders_50_200,0) * 100), 2) as return_pct_50_200,
-    ROUND((returns_200_plus::numeric / NULLIF(orders_200_plus,0) * 100), 2) as return_pct_200_plus
-
-FROM (
-    SELECT 
-        product_category,
-        COUNT(*) as total_orders,
-        SUM(is_returned) as total_returns,
-        ROUND(AVG(is_returned::numeric * 100), 2) as return_rate_pct,
-        ROUND(SUM(refund_amount)::numeric, 2) as total_refund_loss,
-        ROUND(AVG(rating)::numeric, 2) as avg_rating,
-        COUNT(CASE WHEN price < 50 THEN 1 END) as orders_0_50,
-        SUM(CASE WHEN price < 50 AND is_returned = 1 THEN 1 ELSE 0 END) as returns_0_50,
-        COUNT(CASE WHEN price >= 50 AND price < 200 THEN 1 END) as orders_50_200,
-        SUM(CASE WHEN price >= 50 AND price < 200 AND is_returned = 1 THEN 1 ELSE 0 END) as returns_50_200,
-        COUNT(CASE WHEN price >= 200 THEN 1 END) as orders_200_plus,
-        SUM(CASE WHEN price >= 200 AND is_returned = 1 THEN 1 ELSE 0 END) as returns_200_plus
-    FROM order_details
-    WHERE total_orders > 500  
-    GROUP BY product_category
-    HAVING COUNT(*) > 500
-) sub
-ORDER BY return_rate_pct DESC;
 
 
 ## category return and refund perfomance summary
