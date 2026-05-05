@@ -308,24 +308,6 @@ GROUP BY product_category, return_reason
 ORDER BY product_category, total_returns DESC;
 
 
-##  seller return & refund insights
-
-    SELECT 
-    seller_id,
-    seller_city,
-    seller_state,
-    COUNT(*) as total_orders,
-    SUM(is_returned) as total_returns,
-    ROUND(AVG(is_returned::numeric * 100), 2) as return_rate_pct,
-    ROUND(SUM(refund_amount)::numeric, 2) as total_refund_loss,
-    ROUND(AVG(rating)::numeric, 2) as avg_rating,
-    MODE() WITHIN GROUP (ORDER BY return_reason) as top_return_reason,
-    MODE() WITHIN GROUP (ORDER BY product_category) as top_category
-FROM order_details
-GROUP BY seller_id, seller_city, seller_state
-HAVING COUNT(*) > 50
-ORDER BY return_rate_pct DESC
-LIMIT 15;
 
 
 ## seller return & refund performance 
