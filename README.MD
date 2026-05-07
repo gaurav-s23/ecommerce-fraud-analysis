@@ -56,90 +56,135 @@ ecommerce-fraud-analysis/
 ---
 
 ## 🔍 SQL Analysis — 16 Business Queries
-
 ### Q1 — Overall Business Health Check
-**Why:** Baseline metrics — total loss kitna hai  
-**Finding:** Har R$100 mein R$9.74 refund mein ja raha hai  
-**Impact:** 9.74% revenue leakage — immediate action needed
 
-### Q2 — Category wise Return & Fraud Ranking
-**Why:** Konsi category mein sabse zyada fraud  
-**Window Function:** `RANK()`  
-**Finding:** Fashion Female Clothing 31.25% — Rank 1 (Wardrobing Fraud!)  
-**Impact:** Fashion category top contributor to refund loss
+**Why:** To evaluate baseline business performance and total refund impact
+**Finding:** R$9.74 out of every R$100 in revenue is lost through refunds
+**Impact:** 9.74% revenue leakage indicates an immediate need for operational intervention
 
-### Q3 — High Risk Customer Quartile Analysis
-**Why:** High Risk customers ko groups mein baantna  
-**Window Function:** `NTILE(4)`  
-**Finding:** Top customers 100% return rate | Credit card most used  
-**Impact:** Top 20 customers ne R$6,500+ refund liya
+---
+
+### Q2 — Category-wise Return Risk Ranking
+
+**Why:** To identify categories with the highest return concentration
+**Window Function:** `RANK()`
+**Finding:** Fashion Female Clothing recorded a 31.25% return rate — highest across all categories
+**Impact:** Fashion categories are major contributors to refund-related losses
+
+---
+
+### Q3 — High-Risk Customer Quartile Analysis
+
+**Why:** To segment customers based on return behavior patterns
+**Window Function:** `NTILE(4)`
+**Finding:** Top customer quartile showed return rates approaching 100%, with credit cards being the most used payment method
+**Impact:** The top 20 customers accounted for more than R$6,500 in refunds
+
+---
 
 ### Q4 — Price Range Refund Performance
-**Why:** Konse price band mein sabse zyada refund  
-**Finding:** Under R$50 — R$5,35,263 loss (HIGHEST VOLUME)  
-**Impact:** Cheap products mein strict policy needed
 
-### Q5 — Category + Price Range Pivot Table
-**Why:** Category aur price combination mein fraud pattern  
-**Finding:** Bed Bath Table R$0-50 — 704 returns | Telephony — 708 returns  
-**Impact:** Telephony cheap items = fraud hotspot
+**Why:** To determine which order-value segments contribute most to refund losses
+**Finding:** Orders below R$50 generated the highest refund volume — R$535,263 in losses
+**Impact:** Low-value product segments may require stricter return-control measures
 
-### Q6 — Return Rate % by Price Band
-**Why:** Exact fraud % har category ke har price band mein  
-**Finding:** Industry Commerce R$0-50 — 57.89% fraud rate (HIGHEST!)  
-**Impact:** Specific price bands mein targeted action needed
+---
 
-### Q7 — High Return Rate Categories Deep Dive
-**Why:** Sirf high return categories ka deep analysis  
-**Finding:** Fashion Shoes R$200+ — 36.36% return rate  
-**Impact:** Premium fashion items pe strict return policy = R$8,000+ recovery
+### Q5 — Category & Price Range Pivot Analysis
+
+**Why:** To identify return concentration across category-price combinations
+**Finding:** Bed Bath Table (R$0–50) recorded 704 returns, while Telephony recorded 708 returns in the same range
+**Impact:** Low-cost telephony products emerged as a significant return-risk segment
+
+---
+
+### Q6 — Return Rate by Price Band
+
+**Why:** To evaluate return percentages across different category-price combinations
+**Finding:** Industry Commerce products in the R$0–50 range recorded a 57.89% return rate — highest observed
+**Impact:** Certain price bands require targeted return-management strategies
+
+---
+
+### Q7 — High Return Rate Category Deep Dive
+
+**Why:** To investigate categories with consistently high return rates
+**Finding:** Fashion Shoes priced above R$200 recorded a 36.36% return rate
+**Impact:** Premium fashion products may require stricter return validation policies
+
+---
 
 ### Q8 — Category Return & Refund Loss Breakdown
-**Why:** Price range wise exact return % nikalna  
-**Finding:** R$200+ products ka return rate cheap products se ZYADA  
-**Impact:** Myth busted — fraud premium items mein bhi equally targeted
+
+**Why:** To compare refund performance across price segments
+**Finding:** Products above R$200 showed return rates comparable to or higher than lower-priced items
+**Impact:** Return-risk is not limited to low-cost products alone
+
+---
 
 ### Q9 — Complete Category Performance Summary
-**Why:** Platform-wide view — saari categories  
-**Finding:** 54 categories mein consistent high return rate  
-**Impact:** Platform-wide return policy overhaul needed
 
-### Q10 — Same Day & 2 Day Return Fraud
-**Why:** Quick returns = suspicious behavior signal  
-**Finding:** Food 3.37% quick return | Perfumery 1.39%  
-**Impact:** Food category mein no-return policy recommended
+**Why:** To evaluate platform-wide category performance
+**Finding:** 54 categories demonstrated consistently elevated return rates
+**Impact:** The issue appears systemic rather than isolated to a few product categories
 
-### Q11 — Customer Return-Fraud Signals
-**Why:** Customer history se suspicious behavior identify karna  
-**Finding:** Customers with 50-75% return rate — "Changed Mind" top reason  
-**Impact:** Top 20 suspicious customers — R$4,000+ combined refund taken
+---
+
+### Q10 — Same-Day & Two-Day Return Analysis
+
+**Why:** To identify unusually rapid return behavior patterns
+**Finding:** Food products recorded a 3.37% quick-return rate, while Perfumery recorded 1.39%
+**Impact:** Perishable categories may require stricter return policies
+
+---
+
+### Q11 — Customer Return-Risk Signals
+
+**Why:** To identify suspicious customer return behavior patterns
+**Finding:** Customers with 50–75% return rates most frequently selected “Changed Mind” as the return reason
+**Impact:** A small group of customers contributed disproportionately to refund losses
+
+---
 
 ### Q12 — Fashion Wardrobing Detection
-**Why:** Fashion fraud pattern — buy, use, return  
-**Finding:** "Changed Mind" after avg 227 days — classic wardrobing!  
-**Impact:** Fashion category R$40,000+ total refund loss
+
+**Why:** To detect potential wardrobing behavior in fashion categories
+**Finding:** “Changed Mind” returns occurred after an average of 227 days in fashion-related orders
+**Impact:** Fashion-related returns contributed more than R$40,000 in refund losses
+
+---
 
 ### Q13 — Return Reason Performance by Category
-**Why:** Har category mein return reason ka % breakdown  
-**Window Function:** `SUM() OVER (PARTITION BY)`  
-**Finding:** 3 problem types — Fraud | Seller Issue | Operations Error  
-**Impact:** Each problem needs different solution — targeted approach
+
+**Why:** To analyze return reasons across different categories
+**Window Function:** `SUM() OVER (PARTITION BY)`
+**Finding:** Return patterns were driven primarily by three factors — customer behavior, seller-side issues, and operational errors
+**Impact:** Each issue category requires a different corrective strategy
+
+---
 
 ### Q14 — Seller Return & Refund Performance
-**Why:** Konsa seller sabse zyada returns cause kar raha hai  
-**Finding:** Seller 048c27 — 39.22% return rate | Seller 7ea5bf — R$2,238 loss  
-**Impact:** Top 5 sellers responsible for R$8,000+ avoidable refund loss
 
-### Q15 — All Categories Performance Summary
-**Why:** Complete platform view  
-**Finding:** Platform-wide 20.60% — 2x industry benchmark  
-**Impact:** Systemic problem — not isolated incidents
+**Why:** To identify sellers contributing most to return-related losses
+**Finding:** Seller 048c27 recorded a 39.22% return rate, while Seller 7ea5bf generated R$2,238 in refund losses
+**Impact:** The top 5 sellers were responsible for over R$8,000 in avoidable refund losses
+
+---
+
+### Q15 — Platform-wide Return Performance Summary
+
+**Why:** To compare overall platform return performance against industry standards
+**Finding:** The platform recorded a 20.60% return rate — nearly double the industry benchmark
+**Impact:** Elevated returns indicate a broader operational and customer-experience issue
+
+---
 
 ### Q16 — Monthly Revenue Leakage Trend
-**Why:** Time series mein revenue loss track karna  
-**Window Function:** `LAG()` — month over month change  
-**Finding:** Nov 2017 — R$1,13,402 refund (40% spike — festival season!)  
-**Impact:** Festival season mein R$45,000 extra loss vs normal months
+
+**Why:** To monitor refund-related revenue leakage over time
+**Window Function:** `LAG()` — Month-over-Month Comparison
+**Finding:** November 2017 recorded R$113,402 in refunds — a 40% increase during the festival-sales period
+**Impact:** Peak-sales seasons contribute significantly to revenue leakage and require enhanced monitoring
 
 ---
 
