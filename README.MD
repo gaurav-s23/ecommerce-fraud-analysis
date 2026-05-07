@@ -143,6 +143,9 @@ ecommerce-fraud-analysis/
 
 ---
 
+
+
+
 ## 💡 SQL Techniques Used
 
 | Technique | Used In |
